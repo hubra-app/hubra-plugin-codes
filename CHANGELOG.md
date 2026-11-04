@@ -1,6 +1,7 @@
-# Example
+# Codes
 
-## 0.1.0
+## 2.0.0
 
-First version of the template: a notice board with one table, an API, a
-club-app screen, a setting and tests.
+Codes is now a plugin instead of a part of Hubra. Clubs keep their codes,
+their module switch and their roles: the table, the API and the permissions
+are the same as before.
