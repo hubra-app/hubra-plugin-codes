@@ -1,14 +1,14 @@
-id: example
-name: Example
-version: "0.1.0"
+id: codes
+name: Codes
+version: "2.0.0"
 hubra: ">=0.2,<1"
-description: "A starting point for a Hubra plugin: one table, an API, a screen and a test."
+description: "Door codes, lock combinations and passcodes, stored encrypted with the club's key."
 author: Hubra
-homepage: https://github.com/hubra-app/hubra-plugins-template
+homepage: https://github.com/hubra-app/hubra-plugin-codes
 license: AGPL-3.0-or-later
-tags: [example]
-package: hubra_example
-modules: [example]
+tags: [inventory, security]
+package: hubra_codes
+modules: [codes]
 requires: [members]
 migrations: migrations
 frontend: frontend/dist/plugin.js

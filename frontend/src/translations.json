@@ -1,28 +1,76 @@
 {
   "en-GB": {
-    "shell": { "nav": { "example": "Notice board" } },
-    "example": {
-      "title": "Notice board",
-      "desc": "Short notes for the whole club",
-      "placeholder": "Write a note…",
-      "add": "Post note",
-      "saved": "Note posted",
-      "delete": "Delete note",
-      "loading": "Loading…",
-      "empty": "No notes yet."
+    "codes": {
+      "active": "Active",
+      "add": "Add Code",
+      "code": "Code",
+      "codeHidden": "Show code",
+      "codePlaceholder": "e.g. 1234",
+      "codeVisible": "Hide code",
+      "count": "{{count}} Codes",
+      "delete": "Delete Code",
+      "deleteConfirm": "Are you sure you want to delete «{{name}}»?",
+      "deleteError": "Could not delete code.",
+      "deleted": "Code deleted.",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional context…",
+      "edit": "Edit Code",
+      "inactive": "Inactive",
+      "lastUpdated": "Last Updated",
+      "name": "Name",
+      "namePlaceholder": "e.g. Front Door",
+      "noCodes": "No codes yet.",
+      "saveError": "Could not save code.",
+      "saved": "Code saved.",
+      "searchPlaceholder": "Suchen …",
+      "status": "Status",
+      "title": "Codes",
+      "lengthHint": "Drag the slider to change the code length"
+    },
+    "shell": {
+      "nav": {
+        "codes": "Codes"
+      }
+    },
+    "validation": {
+      "codeRequired": "Code is required"
     }
   },
   "de-CH": {
-    "shell": { "nav": { "example": "Pinnwand" } },
-    "example": {
-      "title": "Pinnwand",
-      "desc": "Kurze Notizen für den ganzen Verein",
-      "placeholder": "Notiz schreiben …",
-      "add": "Notiz posten",
-      "saved": "Notiz gepostet",
-      "delete": "Notiz löschen",
-      "loading": "Wird geladen …",
-      "empty": "Noch keine Notizen."
+    "codes": {
+      "active": "Aktiv",
+      "add": "Code hinzufügen",
+      "code": "Code",
+      "codeHidden": "Code anzeigen",
+      "codePlaceholder": "z. B. 1234",
+      "codeVisible": "Code verbergen",
+      "count": "{{count}} Codes",
+      "delete": "Code löschen",
+      "deleteConfirm": "Möchtest du «{{name}}» wirklich löschen?",
+      "deleteError": "Code konnte nicht gelöscht werden.",
+      "deleted": "Code gelöscht.",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Optionale Angaben …",
+      "edit": "Code bearbeiten",
+      "inactive": "Inaktiv",
+      "lastUpdated": "Zuletzt geändert",
+      "name": "Name",
+      "namePlaceholder": "z. B. Haustür",
+      "noCodes": "Noch keine Codes.",
+      "saveError": "Code konnte nicht gespeichert werden.",
+      "saved": "Code gespeichert.",
+      "searchPlaceholder": "Suchen …",
+      "status": "Status",
+      "title": "Codes",
+      "lengthHint": "Mit dem Regler stellst du die Länge des Codes ein"
+    },
+    "shell": {
+      "nav": {
+        "codes": "Codes"
+      }
+    },
+    "validation": {
+      "codeRequired": "Code ist erforderlich"
     }
   }
 }
