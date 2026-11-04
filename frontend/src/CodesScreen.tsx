@@ -164,7 +164,6 @@ export function CodesScreen() {
   const renderCard = (c: Code) => (
     <Paper
       withBorder
-      radius="lg"
       p="md"
       h="100%"
       style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
