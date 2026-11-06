@@ -5,7 +5,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from hubra.api.utils import log_audit
+from hubra.core.utils import log_audit
 from hubra.core.crypto import encrypt_code
 from hubra.core.errors import raise_error
 from hubra.core.extensions import db
