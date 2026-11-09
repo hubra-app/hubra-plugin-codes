@@ -1,5 +1,7 @@
 """Tests for the access codes API (/api/v1/codes)."""
 
+import pytest
+
 from hubra.core.models.audit import AuditEntry
 from hubra_codes.models import Code
 
@@ -129,3 +131,20 @@ def test_deleting_a_member_keeps_their_codes(client, auth_headers, db, seeded_db
     assert (
         kept is not None and kept.created_by_id is None and kept.updated_by_id is None
     )
+
+
+def test_codes_are_offered_for_keys_to_take_over(app, db, seeded_db):
+    from hubra.core import contracts
+    from hubra.core.crypto import encrypt_code
+
+    db.session.add_all([
+        Code(name="Gate", code=encrypt_code("1234", "codes.code"), description="Back"),
+        Code(name="Old", code=encrypt_code("9", "codes.code"), is_active=False),
+    ])
+    db.session.commit()
+    out = contracts.query("codes.codes.export", actor=contracts.SYSTEM)
+    assert [(c["name"], c["code"], c["is_active"]) for c in out] == [
+        ("Gate", "1234", True), ("Old", "9", False),
+    ]
+    with pytest.raises(contracts.ActionForbidden):
+        contracts.query("codes.codes.export", actor=None)
