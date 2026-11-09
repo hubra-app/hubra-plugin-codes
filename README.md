@@ -1,5 +1,10 @@
 # Codes
 
+> **Moving into Keys.** From Keys 1.4 a code is a key of the kind "code"
+> (encrypted, assignable to members and groups, in the inventory). Keys takes
+> this plugin's codes over by itself through the query `codes.codes.export`;
+> once they show up in the inventory, switch Codes off and uninstall it.
+
 A [Hubra](https://hubra.club) plugin for door codes, lock combinations and
 passcodes. Each code is stored encrypted with the club's own key, shown
 masked until someone with the right clicks the eye, and can be copied with

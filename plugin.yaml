@@ -1,6 +1,6 @@
 id: codes
 name: Codes
-version: "2.0.1"
+version: "2.1.0"
 hubra: ">=0.2,<1"
 description: "Door codes, lock combinations and passcodes, stored encrypted with the club's key."
 author: Hubra
@@ -12,3 +12,5 @@ modules: [codes]
 requires: [members]
 migrations: migrations
 frontend: frontend/dist/plugin.js
+# What this plugin extends (Hubra docs/plugins.md).
+uses: [routes, tables, nav, frontend, contracts]
