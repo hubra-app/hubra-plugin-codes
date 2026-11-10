@@ -13,6 +13,9 @@ from hubra.core.modules import Blueprint, Module, NavItem
 
 module = Module(
     code="codes",
+    # Access the standard roles get when a club first switches it on
+    # (docs/roles.md in hubra-app/hubra).
+    role_defaults={"board": "view"},
     name="Codes",
     description="Encrypted door codes and passcodes",
     default_enabled=False,
