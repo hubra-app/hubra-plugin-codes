@@ -2,10 +2,21 @@
 
 from __future__ import annotations
 
-from marshmallow import EXCLUDE, RAISE, Schema, fields, validate
+from marshmallow import EXCLUDE, RAISE, Schema, ValidationError, fields, validate
 
 from hubra.core.extensions import ma
 from .models import Code
+
+# Upper bounds, so one request can't park megabytes in the table (the page
+# allows 16 characters; Wi-Fi keys and passphrases need more room).
+CODE_MAX = 255
+DESCRIPTION_MAX = 5000
+
+
+def _not_blank(value: str) -> bool:
+    if not value.strip():
+        raise ValidationError("Must not be blank.")
+    return True
 
 
 class CodeSchema(ma.SQLAlchemyAutoSchema):
@@ -36,16 +47,26 @@ class CodeCreateSchema(Schema):
     class Meta:
         unknown = RAISE
 
-    name = fields.Str(required=True, validate=validate.Length(min=1, max=255))
-    code = fields.Str(required=True, validate=validate.Length(min=1))
-    description = fields.Str(load_default=None, allow_none=True)
+    name = fields.Str(
+        required=True, validate=[validate.Length(min=1, max=255), _not_blank]
+    )
+    code = fields.Str(
+        required=True, validate=[validate.Length(min=1, max=CODE_MAX), _not_blank]
+    )
+    description = fields.Str(
+        load_default=None,
+        allow_none=True,
+        validate=validate.Length(max=DESCRIPTION_MAX),
+    )
 
 
 class CodeUpdateSchema(Schema):
     class Meta:
         unknown = RAISE
 
-    name = fields.Str(validate=validate.Length(min=1, max=255))
-    code = fields.Str(validate=validate.Length(min=1))
-    description = fields.Str(allow_none=True)
+    name = fields.Str(validate=[validate.Length(min=1, max=255), _not_blank])
+    code = fields.Str(validate=[validate.Length(min=1, max=CODE_MAX), _not_blank])
+    description = fields.Str(
+        allow_none=True, validate=validate.Length(max=DESCRIPTION_MAX)
+    )
     is_active = fields.Bool()

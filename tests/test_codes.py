@@ -148,3 +148,19 @@ def test_codes_are_offered_for_keys_to_take_over(app, db, seeded_db):
     ]
     with pytest.raises(contracts.ActionForbidden):
         contracts.query("codes.codes.export", actor=None)
+
+
+def test_blank_and_oversized_input_is_refused(client, auth_headers):
+    from hubra_codes.schemas import CODE_MAX, DESCRIPTION_MAX
+
+    assert _create(client, auth_headers, code="   ").status_code == 400
+    assert _create(client, auth_headers, name="  ").status_code == 400
+    assert _create(client, auth_headers, code="1" * (CODE_MAX + 1)).status_code == 400
+    assert (
+        _create(client, auth_headers, description="x" * (DESCRIPTION_MAX + 1)).status_code
+        == 400
+    )
+    code_id = _create(client, auth_headers).get_json()["id"]
+    for body in ({"code": " "}, {"code": "1" * (CODE_MAX + 1)}, {"name": ""}):
+        resp = client.patch(f"/api/v1/codes/{code_id}", json=body, headers=auth_headers)
+        assert resp.status_code == 400, body
