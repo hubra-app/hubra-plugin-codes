@@ -24,15 +24,12 @@ class CodeSchema(ma.SQLAlchemyAutoSchema):
         model = Code
         load_instance = True
         unknown = EXCLUDE
-        exclude = ("created_by_id", "updated_by_id")
+        # The code itself is never in a list or detail answer: it comes only
+        # from POST /codes/<id>/reveal, which writes an audit entry.
+        exclude = ("code", "created_by_id", "updated_by_id")
 
-    code = fields.Method("get_plain_code", dump_only=True)
     created_by = fields.Method("get_created_by", dump_only=True)
     updated_by = fields.Method("get_updated_by", dump_only=True)
-
-    @staticmethod
-    def get_plain_code(obj: Code) -> str:
-        return obj.plain_code
 
     @staticmethod
     def get_created_by(obj: Code) -> str | None:

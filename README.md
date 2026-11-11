@@ -6,9 +6,9 @@
 > once they show up in the inventory, switch Codes off and uninstall it.
 
 A [Hubra](https://hubra.club) plugin for door codes, lock combinations and
-passcodes. Each code is stored encrypted with the club's own key, shown
-masked until someone with the right clicks the eye, and can be copied with
-one click.
+passcodes. Each code is stored encrypted with the club's own key, never
+sent in a list: someone with the right clicks the eye (or copy) to fetch one
+code, and every such reveal is in the audit log with who saw which code.
 
 **Plugin id** `codes` · **Package** `hubra_codes` · **Module** `codes` · **Works with** Hubra `>=0.2,<1` (the version without the built-in Codes module)
 

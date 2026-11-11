@@ -25,7 +25,8 @@
       "searchPlaceholder": "Search …",
       "status": "Status",
       "title": "Codes",
-      "lengthHint": "Drag the slider to change the code length"
+      "lengthHint": "Drag the slider to change the code length",
+      "keepHint": "Leave empty to keep the current code"
     },
     "shell": {
       "nav": {
@@ -34,6 +35,11 @@
     },
     "validation": {
       "codeRequired": "Code is required"
+    },
+    "audit": {
+      "actions": {
+        "reveal_code": "Code revealed"
+      }
     }
   },
   "de-CH": {
@@ -62,7 +68,8 @@
       "searchPlaceholder": "Suchen …",
       "status": "Status",
       "title": "Codes",
-      "lengthHint": "Mit dem Regler stellst du die Länge des Codes ein"
+      "lengthHint": "Mit dem Regler stellst du die Länge des Codes ein",
+      "keepHint": "Leer lassen, um den bisherigen Code zu behalten"
     },
     "shell": {
       "nav": {
@@ -71,6 +78,11 @@
     },
     "validation": {
       "codeRequired": "Code ist erforderlich"
+    },
+    "audit": {
+      "actions": {
+        "reveal_code": "Code angezeigt"
+      }
     }
   }
 }

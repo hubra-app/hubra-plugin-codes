@@ -39,6 +39,18 @@ def get_code(id: int):
     return jsonify(_code_schema.dump(code)), 200
 
 
+@codes_bp.post("/<int:id>/reveal")
+@permission_required("codes", "read", "View codes")
+def reveal_code(id: int):
+    """The one code in clear text; every reveal is in the audit log."""
+    code = CodeService.get_by_id(id)
+    plain = CodeService.reveal(code, get_current_member().id)
+    db.session.commit()
+    resp = jsonify({"id": code.id, "code": plain})
+    resp.headers["Cache-Control"] = "no-store"
+    return resp, 200
+
+
 @codes_bp.post("/")
 @permission_required("codes", "create", "Create codes")
 def create_code():

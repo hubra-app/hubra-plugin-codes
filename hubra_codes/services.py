@@ -23,6 +23,18 @@ class CodeService:
         return code  # type: ignore[return-value]
 
     @staticmethod
+    def reveal(code: Code, actor_id: int) -> str:
+        """The code in clear text, with an audit entry saying who saw it."""
+        log_audit(
+            actor_id=actor_id,
+            action="reveal_code",
+            target_type="Code",
+            target_id=code.id,
+            target_label=code.name,
+        )
+        return code.plain_code
+
+    @staticmethod
     def update(code: Code, data: dict, actor_id: int) -> Code:
         if "name" in data:
             code.name = data["name"]
