@@ -3,6 +3,7 @@
 ## Unreleased
 
 - English search placeholder was German ("Suchen …").
+- Security: a code or name of only spaces is refused, and the API caps a code at 255 and a description at 5000 characters (before, any length went into the table).
 
 ## 2.2.0
 
