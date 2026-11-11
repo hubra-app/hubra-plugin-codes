@@ -3,7 +3,6 @@ import {
   ActionIcon,
   Button,
   Checkbox,
-  CopyButton,
   Group,
   Paper,
   PinInput,
@@ -34,7 +33,15 @@ import {
   useT,
   useToast,
 } from '@hubra/plugin-sdk'
-import { createCode, deleteCode, listCodes, updateCode, type Code, type CodeInput } from './api'
+import {
+  createCode,
+  deleteCode,
+  listCodes,
+  revealCode,
+  updateCode,
+  type Code,
+  type CodeInput,
+} from './api'
 
 const QK = ['codes'] as const
 
@@ -43,6 +50,9 @@ const EMPTY: CodeInput = { name: '', code: '', description: '', isActive: true }
 type Status = 'all' | 'active' | 'inactive'
 
 const mono = '"JetBrains Mono", monospace'
+
+// Hidden codes all look the same: the list doesn't know their length.
+const MASK = '••••'
 
 export function CodesScreen() {
   const { t } = useT()
@@ -59,6 +69,9 @@ export function CodesScreen() {
   const [saving, setSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<Code | null>(null)
   const [visible, setVisible] = useState<Set<number>>(new Set())
+  // Codes revealed on this page (each reveal is in the audit log).
+  const [revealed, setRevealed] = useState<Map<number, string>>(new Map())
+  const [copied, setCopied] = useState<number | null>(null)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<Status>('all')
 
@@ -70,10 +83,10 @@ export function CodesScreen() {
     const c = target === 'new' ? null : target
     setForm(
       c
-        ? { name: c.name, code: c.code, description: c.description ?? '', isActive: c.isActive }
+        ? { name: c.name, code: '', description: c.description ?? '', isActive: c.isActive }
         : EMPTY,
     )
-    setLength(c?.code.length || 4)
+    setLength(4)
     setErrors({})
     setEditing(target)
   }
@@ -81,7 +94,11 @@ export function CodesScreen() {
   const save = async () => {
     const next = {
       name: form.name.trim() ? undefined : t('common.nameRequired', 'Name ist erforderlich'),
-      code: form.code.trim() ? undefined : t('validation.codeRequired', 'Code ist erforderlich'),
+      // Editing: an empty code keeps the current one.
+      code:
+        form.code.trim() || editing !== 'new'
+          ? undefined
+          : t('validation.codeRequired', 'Code ist erforderlich'),
     }
     setErrors(next)
     if (next.name || next.code || saving || !editing) return
@@ -90,6 +107,7 @@ export function CodesScreen() {
     try {
       if (editing === 'new') await createCode({ ...input, isActive: undefined })
       else await updateCode(editing.id, input)
+      if (editing !== 'new' && input.code) forget(editing.id)
       qc.invalidateQueries({ queryKey: QK })
       setEditing(null)
       notify('success', t('codes.saved'))
@@ -112,13 +130,48 @@ export function CodesScreen() {
     }
   }
 
-  const toggle = (id: number) =>
+  const forget = (id: number) =>
+    setRevealed((prev) => {
+      const next = new Map(prev)
+      next.delete(id)
+      return next
+    })
+
+  /** The code in clear text: asked from the server once per page visit. */
+  const reveal = async (id: number): Promise<string | null> => {
+    const known = revealed.get(id)
+    if (known !== undefined) return known
+    try {
+      const code = await revealCode(id)
+      setRevealed((prev) => new Map(prev).set(id, code))
+      return code
+    } catch (err: unknown) {
+      notify('error', t('common.error'), err instanceof Error ? err.message : undefined)
+      return null
+    }
+  }
+
+  const toggle = async (id: number) => {
+    if (!visible.has(id) && (await reveal(id)) === null) return
     setVisible((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
       return next
     })
+  }
+
+  const copy = async (id: number) => {
+    const code = await reveal(id)
+    if (code === null) return
+    try {
+      await navigator.clipboard.writeText(code)
+      setCopied(id)
+      setTimeout(() => setCopied((cur) => (cur === id ? null : cur)), 1500)
+    } catch {
+      notify('error', t('common.error'))
+    }
+  }
 
   const statusChip = (c: Code) => (
     <span
@@ -132,7 +185,7 @@ export function CodesScreen() {
   const eye = (c: Code, size: number) => (
     <ActionIcon
       variant="subtle"
-      onClick={() => toggle(c.id)}
+      onClick={() => void toggle(c.id)}
       title={visible.has(c.id) ? t('codes.codeHidden') : t('codes.codeVisible')}
     >
       {visible.has(c.id) ? <IconEyeOff size={size} /> : <IconEye size={size} />}
@@ -159,7 +212,7 @@ export function CodesScreen() {
     </Group>
   )
 
-  const shown = (c: Code) => (visible.has(c.id) ? c.code : '•'.repeat(c.code.length))
+  const shown = (c: Code) => (visible.has(c.id) ? (revealed.get(c.id) ?? MASK) : MASK)
 
   const renderCard = (c: Code) => (
     <Paper
@@ -194,18 +247,18 @@ export function CodesScreen() {
           {shown(c)}
         </code>
         {eye(c, 18)}
-        <CopyButton value={c.code} timeout={1500}>
-          {({ copied, copy }) => (
-            <Tooltip
-              label={copied ? t('common.copied', 'Kopiert') : t('common.copy', 'Kopieren')}
-              withArrow
-            >
-              <ActionIcon variant="subtle" color={copied ? 'green' : undefined} onClick={copy}>
-                {copied ? <IconCheck size={18} /> : <IconCopy size={18} />}
-              </ActionIcon>
-            </Tooltip>
-          )}
-        </CopyButton>
+        <Tooltip
+          label={copied === c.id ? t('common.copied', 'Kopiert') : t('common.copy', 'Kopieren')}
+          withArrow
+        >
+          <ActionIcon
+            variant="subtle"
+            color={copied === c.id ? 'green' : undefined}
+            onClick={() => void copy(c.id)}
+          >
+            {copied === c.id ? <IconCheck size={18} /> : <IconCopy size={18} />}
+          </ActionIcon>
+        </Tooltip>
       </Group>
       {c.description && (
         <Text size="sm" c="dimmed">
@@ -229,7 +282,9 @@ export function CodesScreen() {
   const q = search.toLowerCase()
   const filtered = codes.filter(
     (c) =>
-      (!q || c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)) &&
+      (!q ||
+        c.name.toLowerCase().includes(q) ||
+        (c.description ?? '').toLowerCase().includes(q)) &&
       (status === 'all' || (status === 'active') === c.isActive),
   )
 
@@ -349,7 +404,11 @@ export function CodesScreen() {
           </Field>
           <Field
             label={t('codes.code')}
-            hint={t('codes.lengthHint', 'Mit dem Regler stellst du die Länge des Codes ein')}
+            hint={
+              editing === 'new'
+                ? t('codes.lengthHint', 'Mit dem Regler stellst du die Länge des Codes ein')
+                : t('codes.keepHint', 'Leer lassen, um den bisherigen Code zu behalten')
+            }
           >
             <Slider
               value={length}
