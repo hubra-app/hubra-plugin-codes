@@ -1,5 +1,7 @@
 # Codes
 
+[![Test and release](https://github.com/hubra-app/hubra-plugin-codes/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/hubra-app/hubra-plugin-codes/actions/workflows/release.yml?query=branch%3Amain) [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-bitsandbricks-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/bitsandbricks)
+
 > **Moving into Keys.** From Keys 1.4 a code is a key of the kind "code"
 > (encrypted, assignable to members and groups, in the inventory). Keys takes
 > this plugin's codes over by itself through the query `codes.codes.export`;
