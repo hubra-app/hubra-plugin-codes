@@ -1,6 +1,6 @@
 id: codes
 name: Codes
-version: "2.2.0"
+version: "2.2.1"
 hubra: ">=0.2.5,<1"
 description: "Door codes, lock combinations and passcodes, stored encrypted with the club's key."
 author: Hubra

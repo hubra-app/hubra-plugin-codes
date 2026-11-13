@@ -1,6 +1,6 @@
 # Codes
 
-## Unreleased
+## 2.2.1
 
 - English search placeholder was German ("Suchen …").
 - Security: the list and the detail no longer carry the codes. A code is shown (eye) or copied only through `POST /codes/<id>/reveal`, and every reveal goes into the audit log as "Code angezeigt" with who saw which code. Editing a code no longer shows it: leave the field empty to keep it. Search looks at name and description, not the code.
